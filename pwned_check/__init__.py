@@ -4,6 +4,7 @@ import re
 EMAIL_REGEX_1 = r'[^@]+@[^@]+\.[^@]+'
 EMAIL_REGEX_2 = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 
+
 def parse_email(email_address) -> str:
     compiled_regex = re.compile(EMAIL_REGEX_2)
     if not compiled_regex.match(email_address):
