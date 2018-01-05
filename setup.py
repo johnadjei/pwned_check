@@ -3,7 +3,7 @@ import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
-requires = ['click==6.7', 'pytest']
+requires = ['click==6.7', 'pytest', 'requests==2.18.4']
 tests_require = ['pytest', 'pytest-cache', 'pytest-cov']
 
 
