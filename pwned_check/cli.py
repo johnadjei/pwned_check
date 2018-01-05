@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 import click
 import requests
 from requests.adapters import HTTPAdapter
@@ -9,7 +10,7 @@ import csv
 
 def retryable_session(
     retries=2,
-    backoff_factor=0.3,
+    backoff_factor=0.66667,
     status_forcelist=(500, 502, 504),
     session=None,
 ):
@@ -53,12 +54,11 @@ def main(input_file, output_file):
             resp = request_session.get(url, headers=request_headers, params=request_payload)
         except Exception as x:
             msg = '{email}: Failed with {status}, {reason}'.format(email=email,
-                                                                status=resp.status_code,
-                                                                reason=resp.reason)
+                                                                   status=resp.status_code,
+                                                                   reason=resp.reason)
             click.echo(msg)
             failed_emails.append({'email': email, 'status': resp.status_code, 'reason': resp.reason})
         else:
-            click.echo('{email}: Success...'.format(email=email))
             for rec in resp.json():
                 passed_emails.append({
                     'email': email,
@@ -66,10 +66,12 @@ def main(input_file, output_file):
                     'title': rec['Title'],
                     'data_classes': '|'.join(rec['DataClasses']),
                 })
+        finally:
+            time.sleep(2)
 
     if passed_emails:
         with open(output_file, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(passed_emails)
-        click.echo('CSV output written to "{outfile}'.format(outfile=output_file))
+        click.echo('CSV output written to "{outfile}"'.format(outfile=output_file))
