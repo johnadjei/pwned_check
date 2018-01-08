@@ -33,10 +33,16 @@ PWNED_API_URI_FMT_BREACHED = 'https://haveibeenpwned.com/api/v{api_version}/brea
 PWNED_API_URI_FMT_PASTE = 'https://haveibeenpwned.com/api/v{api_version}/pasteaccount/{email}'
 
 
-@click.command()
+@click.group()
+@click.pass_context
+def main(context):
+    context.obj = {}
+
+
+@main.command()
 @click.argument('input_file', type=click.Path(exists=True))
 @click.argument('output_file', type=click.Path(exists=False))
-def main(input_file, output_file):
+def breaches(input_file, output_file):
     emails = load_file(input_file)
     request_headers = {'user-agent': PWNED_USER_AGENT}
     request_payload = {'includeUnverified': True}
